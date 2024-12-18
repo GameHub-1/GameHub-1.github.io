@@ -18,9 +18,8 @@
       </ul>
     </nav>
   </header>
-  <div class="iframe-container">
-    <iframe id="gameIframe" src="about:blank" frameborder="0"></iframe>
-    <button class="fullscreen-btn" onclick="toggleFullscreen()">Fullscreen</button>
+  <div class="popup-container">
+    <button class="open-popup-btn" onclick="openPopup()">Open in Popup</button>
   </div>
 
   <script>
@@ -28,37 +27,21 @@
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
     }
-  
-    document.addEventListener("DOMContentLoaded", () => {
-      const iframe = document.getElementById("gameIframe");
+
+    function openPopup() {
       const targetUrl = getQueryParam("l");
-  
+
       if (targetUrl) {
-        iframe.src = `https://${targetUrl}`;
+        const popupFeatures = "width=800,height=600,resizable=yes,scrollbars=yes,status=yes";
+        const popupWindow = window.open(`https://${targetUrl}`, "_blank", popupFeatures);
+
+        if (!popupWindow || popupWindow.closed || typeof popupWindow.closed === "undefined") {
+          alert("Popup blocked! Please allow popups for this website.");
+        }
       } else {
-        iframe.src = "about:blank"; 
-      }
-    });
-  
-    function toggleFullscreen() {
-      const container = document.querySelector('.iframe-container');
-  
-      if (!document.fullscreenElement) {
-        container.requestFullscreen().catch(err => {
-          console.error(`Failed to enter fullscreen mode: ${err.message}`);
-        });
-      } else {
-        document.exitFullscreen().catch(err => {
-          console.error(`Failed to exit fullscreen mode: ${err.message}`);
-        });
+        alert("No target URL specified. Please provide a valid URL using the 'l' query parameter.");
       }
     }
-  
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && document.fullscreenElement) {
-        document.exitFullscreen();
-      }
-    });
   </script>
 </body>
 </html>
